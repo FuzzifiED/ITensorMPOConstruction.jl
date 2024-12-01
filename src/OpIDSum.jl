@@ -293,7 +293,6 @@ end
       end
     end
 
-    flux != QN() && error("The term does not have zero flux.")
     mod(fermion_parity, 2) != 0 && error("Odd parity fermion terms not supported.")
   end
 end
