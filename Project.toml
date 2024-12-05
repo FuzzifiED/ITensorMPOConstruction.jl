@@ -1,7 +1,7 @@
 name = "ITensorMPOConstruction"
 uuid = "f1f99f3b-4b00-4d2f-a9c2-ce76efdc8f31"
 authors = ["Ben Corbett and contributors"]
-version = "0.1.99"
+version = "0.1.0"
 
 [deps]
 ITensorMPS = "0d1a4710-d33b-49a5-8f18-73bdf49b47e2"
