@@ -127,7 +127,7 @@ Additionally, a further constructor is provided which takes in a modifying `func
 
 ## Haldane-Shasty Hamiltonian and truncation
 
-The Haldane-Shasty Hamiltonian defined on $N$ spin-$\frac{1}{2}$ particles is
+The Haldane-Shasty Hamiltonian defined on $N$ spin-half particles is
 
 $$
 H = \frac{J \pi^2}{N^2} \sum_{n = 1}^N \sum_{m = n + 1}^N \frac{\mathbf{S}_m \cdot \mathbf{S}_n}{\sin^2 \left( \pi \frac{n - m}{N} \right)} \ .
@@ -143,100 +143,82 @@ Starting with the MPO from ITensorMPOConstruction obtained with the standard `to
 
 ## Benchmarks: Fermi-Hubbard Hamiltonian in Momentum Space
 
-We constructed the momentum space Fermi-Hubbard Hamiltonian using ITensorMPS, ITensorMPOConstruction and [block2](https://github.com/block-hczhai/block2-preview) which has one of the most sophisticated MPO construction algorithms.
-
-For block2, we used the `FastBlockedDisjointSVD` algorithm for MPO construction.
-
-For even $N$, the Hamiltonian can be represented exactly as an MPO of bond dimension $10 N - 4$, and all the algorithms achieve this minimal bond dimension. ITensorMPOConstruction is also not only able to construct this particular MPO much faster than the competition, but the sparsity of the resulting MPO is much higher.
+We constructed the momentum space Fermi-Hubbard Hamiltonian using ITensorMPS and ITensorMPOConstruction. For even $N$, the Hamiltonian can be represented exactly as an MPO of bond dimension $10 N - 4$, and both algorithms achieve this minimal bond dimension. ITensorMPOConstruction is also not only able to construct this particular MPO much faster, but the sparsity of the resulting MPO is much higher.
 
 ### Bond Dimension 
-| $N$ | ITensorMPS | block2 | ITensorMPOConstruction |
-|-----|------------|--------|------------------------|
-| 10  | 96         | 96     | 96                     |
-| 20  | 196        | 196    | 196                    |
-| 30  | 296        | 296    | 296                    |
-| 40  | N/A        | 396    | 396                    |
-| 50  | N/A        | 496    | 496                    |
-| 100 | N/A        | 996    | 996                    |
-| 200 | N/A        | 1996   | 1996                   |
-| 300 | N/A        | 2996   | 2996                   |
-| 400 | N/A        | 3996   | 3996                   |
-| 500 | N/A        | ????   | 4996                   |
+| $N$ | ITensorMPS | ITensorMPOConstruction |
+|-----|------------|------------------------|
+| 10  | 96         | 96                     |
+| 20  | 196        | 196                    |
+| 30  | 296        | 296                    |
+| 40  | N/A        | 396                    |
+| 50  | N/A        | 496                    |
+| 100 | N/A        | 996                    |
+| 200 | N/A        | 1996                   |
+| 300 | N/A        | 2996                   |
+| 400 | N/A        | 3996                   |
+| 500 | N/A        | 4996                   |
 
 ### Sparsity 
-| $N$ | ITensorMPS | block2 | ITensorMPOConstruction |
-|-----|------------|--------|------------------------|
-| 10  | 92.7%      | 96.7%  | 99.32%                 |
-| 20  | 92.6%      | 98.4%  | 99.70%                 |
-| 30  | 92.6%      | 99.0%  | 99.81%                 |
-| 40  | N/A        | 99.2%  | 99.86%                 |
-| 50  | N/A        | 99.4%  | 99.89%                 |
-| 100 | N/A        | 99.7%  | 99.94%                 |
-| 200 | N/A        | 99.85% | 99.97%                 |
-| 300 | N/A        | 99.90% | 99.982%                |
-| 400 | N/A        | 99.92% | 99.986%                |
-| 500 | N/A        | N/A    | 99.999%                |
+
+Sparsity of the `ITensorMPS` MPO with the default `splitblocks=true`, and the `ITensorMPOConstruction` MPO with the less aggressive `combine_qn_sectors::Bool=false`.
+
+| $N$ | ITensorMPS | ITensorMPOConstruction |
+|-----|------------|------------------------|
+| 10  | 92.7%      | 99.32%                 |
+| 20  | 92.6%      | 99.70%                 |
+| 30  | 92.6%      | 99.81%                 |
+| 40  | N/A        | 99.86%                 |
+| 50  | N/A        | 99.89%                 |
+| 100 | N/A        | 99.94%                 |
+| 200 | N/A        | 99.97%                 |
+| 300 | N/A        | 99.982%                |
+| 400 | N/A        | 99.986%                |
+| 500 | N/A        | 99.999%                |
 
 ### Runtime 
-| $N$ | ITensorMPS | block2 | ITensorMPOConstruction |
-|-----|------------|--------|------------------------|
-| 10  | 0.32s      | 0.016s | 0.009s                 |
-| 20  | 30.6s      | 0.089s | 0.052s                 |
-| 30  | 792s       | 0.30s  | 0.14s                  |
-| 40  | N/A        | 0.72s  | 0.38s                  |
-| 50  | N/A        | 1.5s   | 0.63s                  |
-| 100 | N/A        | 20s    | 7.7s                   |
-| 200 | N/A        | 489s   | 103s                   |
-| 300 | N/A        | 3711s  | 500s                   |
-| 400 | N/A        | 18373s | 1554s                  |
-| 500 | N/A        | N/A    | 3802s                  |
+| $N$ | ITensorMPS | ITensorMPOConstruction |
+|-----|------------|------------------------|
+| 10  | 0.32s      | 0.009s                 |
+| 20  | 30.6s      | 0.052s                 |
+| 30  | 792s       | 0.14s                  |
+| 40  | N/A        | 0.38s                  |
+| 50  | N/A        | 0.63s                  |
+| 100 | N/A        | 7.7s                   |
+| 200 | N/A        | 103s                   |
+| 300 | N/A        | 500s                   |
+| 400 | N/A        | 1554s                  |
+| 500 | N/A        | 3802s                  |
 
+## A note on sparsity
 
-## Benchmarks: Electronic Structure Hamiltonian
+The core component of pretty many MPO construction algorithms is to take an operator $\hat{O}$ defined on a bipartite system
 
-We also construct a particle number and spin preserving two-electron Hamiltonian with random coefficients, to mock the performance of our algorithm on constructing the electronic structure Hamiltonian. In this case we compare against the `FastBipartite` algorithm from block2. This bipartite algorithm essentially performs no compression of the resulting MPO, since it ignores the specific value of the coefficients, but it produces MPOs of high sparsity. In this case, since the coefficients are random, there is no underlying pattern to compress and so the bipartite algorithm works well.
+$$
+  \hat{O} = \sum_{a = 1}^{N_A} \sum_{b = 1}^{N_B} \gamma_{ab} \hat{A}_a \otimes \hat{B}_b \ ,
+$$
 
-We see that for $N \geq 40$, where $N$ is the number of spin-orbitals, ITensorMPOConstruction constructs MPOs of bond dimension slightly larger than block2. This increase in bond dimension can be explained by the attempt to perform compression on an incompressible Hamiltonian. For $N \geq 70$, ITensorMPOConstruction is also slower than block2.
+and turn it into a two site MPO
 
-By default, the MPO from ITensorMPOConstruction is also denser than the MPOs from ITensorMPS and block2. However, both ITensorMPS and block2 create blocks of size one, whereas ITensorMPOConstruction creates larger blocks. Using `ITensorMPS.splitblocks` we can split the larger blocks in the MPO from ITensorMPOConstruction up into blocks of size one. After this, the MPO from ITensorMPOConstruction is sparser than the competition.
+$$
+  \hat{O} = \sum_{\chi = 1}^w \left( \sum_{a = 1}^{N_A} \alpha_{\chi a} \hat{A}_a \right) \otimes \left( \sum_{b = 1}^{N_B} \beta_{\chi b} \hat{B}_b \right) \ .
+$$
 
-In some sense, this Hamiltonian is a poor match for ITensorMPOConstruction due to its relatively low sparsity and lack of compression. Nevertheless, ITensorMPOConstruction is competitive with the better suited bipartite algorithm. A more direct comparison would be with block2's `FastBlockedDisjointSVD` algorithm, which for $N = 70$ constucts an MPO of bond dimension 10117 that is 86% sparse in 1431 seconds. While the bond dimension is similar to the other methods, the sparsity and construction time are worse.
+The MPO bond dimension is $w$ and the MPO tensors are essentially operator valued vectors who's $\chi$-th entry is $\left( \sum_{a = 1}^{N_A} \alpha_{\chi a} \hat{A}_a \right)$ for the left tensor. This vector of operators can be reshaped into the standard matrix of operators if $a$ is a combined incoming link and onsite index. 
 
-### Bond Dimension 
-| $N$ | ITensorMPS | block2 | ITensorMPOConstruction |
-|-----|------------|--------|------------------------|
-| 10  | 227        | 227    | 227                    |
-| 20  | 852        | 852    | 852                    |
-| 30  | N/A        | 1877   | 1877                   |
-| 40  | N/A        | 3302   | 3355                   |
-| 50  | N/A        | 5127   | 5134                   |
-| 60  | N/A        | 7352   | 7364                   |
-| 70  | N/A        | 9977   | 9985                   |
-| 80  | N/A        | 13002  | 13006                  |
-| 90  | N/A        | 16427  | 16473                  |
+In the case of operators with a global $U(1)$ symmetry the matrix $\gamma$ can be permuted into a block diagonal form. This form has many benefits since each block can be decomposed into a MPO independently and the $\alpha$ and $\beta$ matrices inherit the block diagonal nature. The way that $\gamma$ is brought into block diagonal form in the original `ITensorMPS` algorithm is to use the quantum numbers associated with the operators $\hat{A}_a$ and $\hat{B}_b$. This has two problems; first it requires that the user provide the symmetry information, and second there may be other block diagonal blocks unrelated to the symmetries. The approach taken in this library addresses both these issues.
 
-### Sparsity 
-| $N$ | ITensorMPS | block2 | ITensorMPOConstruction | After `splitblocks` |
-|-----|------------|--------|------------------------|---------------------|
-| 10  | 94.5%      | 89.2%  | 93.4%                  | 95.7%               |
-| 20  | 95.4%      | 93.1%  | 94.1%                  | 97.1%               |
-| 30  | N/A        | 95.0%  | 94.4%                  | 97.6%               |
-| 40  | N/A        | 96.0%  | 94.4%                  | 97.8%               |
-| 50  | N/A        | 96.7%  | 94.6%                  | 97.9%               |
-| 60  | N/A        | 97.2%  | 94.6%                  | 97.9%               |
-| 70  | N/A        | 97.6%  | 94.7%                  | N/A                 |
-| 80  | N/A        | 97.8%  | 94.7%                  | N/A                 |
-| 90  | N/A        | 98.1%  | 94.7%                  | N/A                 |
+In `ITensorMPOConstruction` $\gamma$ is brought into block diagonal form by viewing it as a bipartite graph adjacency matrix ($\gamma_{a b} \neq 0$ implies there is an edge between left-vertex $a$ and right-vertex $b$) and finding the connected components. Each connected component is then a block in the block diagonal representation. This does not require the use of any symmetry information and is guaranteed to produce the maximum possible number of blocks. However, although `ITensorMPOConstruction` will produce a matrix $\alpha$ of minimal bond dimension $w$ and greatest number of diagonal blocks this does not mean that the overall sparsity of the MPO tensor is maximized. This is because `ITensors`' sparse format is more flexible, and most of the time each diagonal block in the $\alpha$ matrix winds up being stored itself in a sparse format. We use the sparse QR decomposition to decompose each block of $\gamma$, and while the resulting matrices (which become the blocks in $\alpha$ and $\beta$) are sparse, their sparsity is not necessarily optimal.
 
-### Runtime 
-| $N$ | ITensorMPS | block2 | ITensorMPOConstruction |
-|-----|------------|--------|------------------------|
-| 10  | 3.65s      | 0.166s | 0.052s                 |
-| 20  | 605s       | 2.67s  | 1.21s                  |
-| 30  | N/A        | 15.0s  | 7.00s                  |
-| 40  | N/A        | 50.4s  | 29.5s                  |
-| 50  | N/A        | 137s   | 104s                   |
-| 60  | N/A        | 332s   | 284s                   |
-| 70  | N/A        | 619s   | 625s                   |
-| 80  | N/A        | 1220s  | 1545s                  |
-| 90  | N/A        | 1944s  | 3968s                  |
+To illustrate the suboptimal sparsity, we turn to [Block2](https://github.com/block-hczhai/block2-preview) which has a sophisticated set of MPO construction algorithms. Specifically we will use the `FastBipartite` algorithm, based on the bipartite graph algorithm from [RenLi2020](https://doi.org/10.1063/5.0018149). The bipartite algorithm is very efficient and also produces MPO tensors of exceptional sparsity. The drawback is that it is unable to compress the MPO bond dimension. For example, for the momentum space Fermi-Hubbard Hamiltonian the bond dimension it produces is $O(N^2)$. However, for some operators such as the electronic structure Hamiltonian the bipartite algorithm and the rank decomposition algorithm (used in `ITensorMPS` and here) produce similar MPO bond dimensions. In these cases, the bipartite algorithm will likely produce MPOs of greater sparsity.
+
+In the table below we present data from constructing two different electronic structure Hamiltonians, the second of which is from [ZhaiLee2023](https://doi.org/10.1021/acs.jpca.3c06142). Our rank decomposition algorithm only slightly reduces the bond dimension compared to the bipartite MPO from `Block2`, but it results in a much denser MPO. This increase in sparsity has a significant impact on the subsequent DMRG performance, which is larger by 75% for our rank decomposition MPO (timings and sparsities taken from `Block2`'s by transferring over the MPO from `ITensorMPOConstruction`).
+
+| system                                                                              | algorithm | bond dimension | sparsity |
+|-------------------------------------------------------------------------------------|-----------|----------------|----------|
+| C <sub>2</sub>                                                                      | rank      | 704            | 97.21%   |
+| C <sub>2</sub>                                                                      | bipartite | 722            | 98.68%   |
+| [Fe <sub>2</sub> S(C H <sub>3</sub>) (S C H <sub>3</sub>)<sub>4</sub>]<sup>3-</sup> | rank      | 2698           | 88.70%   |
+| [Fe <sub>2</sub> S(C H <sub>3</sub>) (S C H <sub>3</sub>)<sub>4</sub>]<sup>3-</sup> | bipartite | 2738           | 95.64%   |
+
+To further complicate matters `Block2` has a different, less flexible, sparse storage format from `ITensors`. Specifically, they store MPO tensors in a "matrix of operators" format, where the onsite operator is always dense. Essentially this format stores a sparse representation of $\alpha$, while maintaining a dense form for $\hat{A}_a$. To facilitate comparisons between the two libraries without having to convert the MPOs between them, we provide the function `block2_nnz(mpo::MPO)::Tuple{Int, Int}` which returns the total number of blocks (the size of $\alpha$ summed across each site) and the number of non-zero blocks.

@@ -202,3 +202,38 @@ function sparsity(mpo::MPO)::Float64
 
   return num_zeros / num_entries
 end
+
+function block2_nnz(mpo::MPO)::Tuple{Int, Int}
+  total_blocks = 0
+  nnz_blocks = 0
+  sites = noprime(siteinds(first, mpo))
+  for (i, t) in enumerate(mpo)
+    t = t.tensor
+    total_blocks += prod(size(t)) ÷ dim(sites[i])^2
+    
+    link_locs = [j for j in 1:ndims(t) if inds(t)[j] ∉ (dag(sites[i]), sites[i]')]
+    @assert length(link_locs) ∈ (1, 2)
+
+    nz_link_coords = Set{Tuple{Int, Int}}()
+
+    for b in ITensors.eachnzblock(t)
+      block = ITensors.blockview(t, b)
+      blockStart = NDTensors.blockstart(t, b) .- 1
+
+      for coords in CartesianIndices(block)
+        value = block[coords]
+        value == 0 && continue
+
+        coords = coords.I .+ blockStart
+
+        link_coords = coords[link_locs]
+        length(link_coords) == 1 && (link_coords = (only(link_coords), 0))
+        push!(nz_link_coords, link_coords)
+      end
+    end
+
+    nnz_blocks += length(nz_link_coords)
+  end
+
+  return total_blocks, nnz_blocks
+end

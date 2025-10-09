@@ -183,30 +183,32 @@ let
   end
 end
 
-let
-  for N in [10]
-    println(
-      "Constructing the Fermi-Hubbard momentum space MPO for $N sites using ITensorMPS"
-    )
-    @time "Total construction time" mpo = Fermi_Hubbard_momentum_space(
-      N; useITensorsAlg=true
-    )
-    println("The maximum bond dimension is $(maxlinkdim(mpo))")
-    println("The sparsity is $(ITensorMPOConstruction.sparsity(mpo))")
-    println()
-  end
-end
+# let
+#   for N in [10]
+#     println(
+#       "Constructing the Fermi-Hubbard momentum space MPO for $N sites using ITensorMPS"
+#     )
+#     @time "Total construction time" mpo = Fermi_Hubbard_momentum_space(
+#       N; useITensorsAlg=true
+#     )
+#     println("The maximum bond dimension is $(maxlinkdim(mpo))")
+#     println("The sparsity is $(ITensorMPOConstruction.sparsity(mpo))")
+#     @show ITensorMPOConstruction.block2_nnz(mpo)
+#     println()
+#   end
+# end
 
 let
-  for N in [10]
+  for N in [10, 26]
     println(
       "Constructing the Fermi-Hubbard momentum space MPO for $N sites using ITensorMPOConstruction",
     )
     @time "Total construction time" mpo = transcorrelated_Fermi_Hubbard_momentum_space_OpIDSum(
-      N
+      N, 1, 4, -0.5
     )
     println("The maximum bond dimension is $(maxlinkdim(mpo))")
     println("The sparsity is $(ITensorMPOConstruction.sparsity(mpo))")
+    @show ITensorMPOConstruction.block2_nnz(mpo)
     println()
   end
 end
