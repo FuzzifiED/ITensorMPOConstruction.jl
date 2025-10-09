@@ -115,10 +115,10 @@ def electronic_structure(N, alg):
     print(f"N = {N}, time = {stop - start}")
 
 
-for N in [10]:
-    fermi_hubbard(N, MPOAlgorithmTypes.FastBlockedDisjointSVD)
+for N in [10, 26]:
+    fermi_hubbard(N, MPOAlgorithmTypes.FastBlockedDisjointSVD, J=-0.5)
     print()
 
-for N in [10, 10, 20, 30, 40, 50, 60, 70]:
-    electronic_structure(N, MPOAlgorithmTypes.FastBipartite)
-    print()
+# for N in [10, 10, 20, 30, 40, 50, 60, 70]:
+#     electronic_structure(N, MPOAlgorithmTypes.FastBipartite)
+#     print()
