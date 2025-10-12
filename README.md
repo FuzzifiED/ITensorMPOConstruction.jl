@@ -193,6 +193,8 @@ Sparsity of the `ITensorMPS` MPO with the default `splitblocks=true`, and the `I
 
 ## A note on sparsity
 
+### Thanks to [Huanchen Zhai](https://scholar.google.com/citations?user=HM_YBL0AAAAJ&hl=en) for providing the discussion and data motivating this section.
+
 The core component of pretty many MPO construction algorithms is to take an operator $\hat{O}$ defined on a bipartite system
 
 $$
